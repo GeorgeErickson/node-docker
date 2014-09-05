@@ -1,0 +1,16 @@
+[Unit]
+Description=node-docker
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker kill web-%i
+ExecStartPre=-/usr/bin/docker rm web-%i
+ExecStart=/usr/bin/docker run --rm --name web-%i -e PORT=8000 -p 8000:8000 quay.io/georgeerickson/node-docker
+ExecStop=/usr/bin/docker kill web-%i
+
+[X-Fleet]
+X-Conflicts=node-docker@*.service
+
+[Install]
+WantedBy=multi-user.target
